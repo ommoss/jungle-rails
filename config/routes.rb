@@ -10,11 +10,14 @@ Rails.application.routes.draw do
     delete :remove_item
   end
 
+  resources :categories, only: [:show]
+
   resources :orders, only: [:create, :show]
 
   namespace :admin do
     root to: 'dashboard#show'
-    resources :products, except: [:edit, :update, :show]
+    resources :products, :categories, except: [:edit, :update, :show]
+
   end
 
   # The priority is based upon order of creation: first created -> highest priority.
