@@ -1,9 +1,13 @@
 class OrdersController < ApplicationController
 
-  before_filter :authorize
-
   def show
     @order = Order.find(params[:id])
+    respond_to do |format|
+      # Tell the UserMailer to send a order reciept after save
+      UserMailer.email_receipt(@order).deliver_later
+      format.json {render json: @order, status: :created, location: @user}
+      format.html {@order}
+    end
   end
 
   def create
@@ -11,6 +15,7 @@ class OrdersController < ApplicationController
     order  = create_order(charge)
 
     if order.valid?
+
       empty_cart!
       redirect_to order, notice: 'Your Order has been placed.'
     else
@@ -32,7 +37,7 @@ class OrdersController < ApplicationController
     Stripe::Charge.create(
       source:      params[:stripeToken],
       amount:      cart_total, # in cents
-      description: "<%= current_user.name %>'s Jungle Order",
+      description: "<%= current_user.first_name %>'s Jungle Order",
       currency:    'cad'
     )
   end

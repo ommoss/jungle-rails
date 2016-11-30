@@ -1,5 +1,5 @@
 <section class="cart-show">
-
+  <% if cart.count > 0 %>
   <header class="page-header">
     <h1>My Cart</h1>
   </header>
@@ -26,7 +26,7 @@
             TOTAL:
           </th>
           <th>
-            <%= @cart_total %>
+            <%= number_to_currency(@cart_total) %>
           </th>
         </tr>
       </tfoot>
@@ -41,13 +41,23 @@
           data-key="<%= Rails.configuration.stripe[:publishable_key] %>"
           data-amount="<%= @cart_total * 100 %>"
           data-name="Jungle"
-          data-description= "<%= current_user.name %>'s Jungle Order"
           data-locale="auto"
-          data-email="ommoss63@gmail.com"
+          <% if !current_user %>
+          <% else %>
+          data-description="<%= current_user.first_name %>'s Jungle Order"
+          data-email="<%= current_user.email %>"
+          <% end %>
           data-currency="cad">
         </script>
       <% end %>
     </div>
   </div>
 
+  <% else %>
+  <header class="page-header">
+    <div class="alert alert-warning">
+      <h4>Your cart is empty! Please <%= link_to 'add things!', root_path %></h4>
+    </div>
+  </header>
+  <% end %>
 </section>

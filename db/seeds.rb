@@ -14,7 +14,10 @@ def open_asset(file_name)
 end
 
 # Only run on development (local) instances not on production, etc.
-raise "Development seeds only (for now)!" unless Rails.env.development?
+# unless Rails.env.development?
+#   puts "Development seeds only (for now)!"
+#   exit 0
+# end
 
 # Let's do this ...
 
@@ -52,7 +55,7 @@ cat1.products.create!({
   name:  'Hipster Hat',
   description: Faker::Hipster.paragraph(4),
   image: open_asset('apparel3.jpg'),
-  quantity: 4,
+  quantity: 0,
   price: 34.49
 })
 
@@ -125,9 +128,64 @@ cat3.products.create!({
   name:  'Red Bookshelf',
   description: Faker::Hipster.paragraph(4),
   image: open_asset('furniture3.jpg'),
-  quantity: 0,
+  quantity: 23,
   price: 2_483.75
 })
 
+## USERS
+
+puts "Re-creating Users..."
+
+User.destroy_all
+
+User.create!({
+  first_name: "Tank",
+  last_name: "Dempsy",
+  password: "password",
+  password_confirmation: "password",
+  email: "america@example.com"
+})
+
+User.create!({
+  first_name: "Don",
+  last_name: "Mick",
+  password: "password",
+  password_confirmation: "password",
+  email: "mickey@example.com"
+})
+
+## REVIEWS
+
+puts "Re-creating Reviews..."
+
+Review.destroy_all
+
+Review.create!({
+  product_id: 1,
+  user_id: 1,
+  rating: 4,
+  description: "SO BAD."
+})
+
+Review.create!({
+  product_id: 1,
+  user_id: 2,
+  rating: 3,
+  description: "this is fine"
+})
+
+Review.create!({
+  product_id: 2,
+  user_id: 2,
+  rating: 5,
+  description: "My fav."
+})
+
+Review.create!({
+  product_id: 2,
+  user_id: 1,
+  rating: 3,
+  description: "it is bad."
+})
 
 puts "DONE!"
